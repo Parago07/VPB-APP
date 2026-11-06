@@ -1,0 +1,9 @@
+{
+  "expo": {
+    "name": "VPB • Agenda da turma",
+    "slug": "vpb-agenda",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light"
+  }
+}
