@@ -12,7 +12,10 @@
     },
     "owner": "cparagoa",
     "ios": {
-      "bundleIdentifier": "com.parago07.vpbagenda"
+      "bundleIdentifier": "com.parago07.vpbagenda",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     }
   }
 }
