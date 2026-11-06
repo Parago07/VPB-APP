@@ -1,0 +1,29 @@
+name: TestFlight
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  testflight:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    concurrency: vpb-testflight
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm test
+      - name: Compilar no Expo e enviar ao TestFlight
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "::error::Configure o secret EXPO_TOKEN no repositório VPB-APP."
+            exit 1
+          fi
+          npx --yes eas-cli@26.0.0 workflow:run .eas/workflows/testflight.yml --wait --non-interactive

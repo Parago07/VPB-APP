@@ -31,6 +31,12 @@ Para colocar o grupo em uso real, faltam autenticação por convite, armazenamen
 
 ## Verificação
 
+### Build para TestFlight
+
+Para configurar a assinatura do VPB pela primeira vez, execute `npm run build:ios` e autentique-se na equipe Apple Developer. Use o cadastro do VPB (`com.parago07.vpbagenda`) no App Store Connect. Registre o Apple ID numérico desse app em `submit.production.ios.ascAppId` no `eas.json` e configure a chave de envio do projeto em `eas credentials -p ios`.
+
+Para disparar pelo GitHub, configure um token Expo autorizado no secret `EXPO_TOKEN` do VPB-APP e abra **Actions → TestFlight → Run workflow → main**. O GitHub acompanha os dois jobs do Expo: compilação e envio ao TestFlight. No computador autenticado no Expo, o mesmo fluxo roda com `npx eas-cli@26.0.0 workflow:run .eas/workflows/testflight.yml --wait`.
+
 ```sh
 npm test
 npx expo export --platform all
