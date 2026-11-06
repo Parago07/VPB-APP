@@ -306,7 +306,7 @@ function Prototype() {
         {screen === "Perfil" && (
           <>
             <View style={[s.box, s.row]}>
-              <Avatar look={look} />
+              <Avatar look={look} large />
               <View>
                 <Text style={s.heading}>{user}</Text>
                 <Text>{posts} de 3 postagens para os itens</Text>
@@ -418,3 +418,4 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
+
