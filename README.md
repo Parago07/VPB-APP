@@ -1,6 +1,6 @@
 # VPB · Agenda da turma
 
-Protótipo interativo em português para Android, iPhone e navegador. Abre no calendário do mês atual com três rolês de exemplo. Consulte o [PRD completo](./PRD.md).
+Protótipo interativo em português para Android, iPhone e navegador. Abre no calendário do mês atual com a agenda inicialmente vazia. Consulte o [PRD completo](./PRD.md).
 
 ## Abrir no celular
 
@@ -17,19 +17,31 @@ Conecte o celular à mesma rede Wi-Fi e abra o QR code exibido no terminal pelo 
 
 ## Experimentar o fluxo
 
-1. Selecione um dia, toque em **Publicar rolê** e crie uma sugestão com dia e horário.
+1. Selecione um dia, toque em **Publicar rolé** e crie uma sugestão com dia e horário.
 2. Em **Perfil → Trocar perfil de teste**, escolha Zé e reaja à sugestão. Volte ao autor, confirme o evento e depois altere a hora para conferir a diferença nas reações.
 3. Dispare um **batsinal** com um local. Troque para outro perfil e abra **Avisos** para ver a simulação da entrega. Desative Batsinal nesse perfil e repita o teste.
-4. Publique três rolês com o mesmo perfil. Em **Perfil**, equipe um chapéu e a Balthinha.
+4. Publique três rolés com o mesmo perfil. Em **Perfil**, equipe um chapéu e a Balthinha.
 5. Como autor ou administrador, abra um evento e escolha **Cancelado pela patroa**. Verifique o rótulo na agenda e nos avisos dos outros perfis.
 
-## Dados e alcance desta versão
+## Entrar na agenda compartilhada
 
-O calendário, avatares, reações e preferências persistem no armazenamento local. Cada instalação tem sua própria cópia. O seletor de perfis permite experimentar permissões e avisos no mesmo aparelho. Os três eventos de exemplo contam para a progressão dos respectivos autores.
+No **Perfil**, cole seu código individual em **Convite privado da turma** e toque em **Conectar ao grupo**. O código identifica um dos 28 membros no projeto Supabase do VPB. O modo de teste do aparelho tem armazenamento separado. Seus dados de teste não são publicados ao conectar.
 
-Para colocar o grupo em uso real, faltam autenticação por convite, armazenamento compartilhado, validação de permissões no servidor e entrega de push. O protótipo simula avisos dentro do app. O teste com tela bloqueada requer credenciais e aparelhos físicos. [Configuração de push no Expo](https://docs.expo.dev/push-notifications/push-notifications-setup/)
+O servidor verifica o convite e as permissões em cada ação. Ele grava alterações com verificação de revisão e recibos para reenvios. O Supabase Realtime avisa os clientes quando buscar o estado atualizado. Preferências e avisos são filtrados por membro. Os avisos desta versão aparecem dentro do app.
 
-## Verificação
+Nos detalhes do evento, use **Quem leva o quê?** para assumir ou liberar itens. Em **Divisão de contas**, confirme sua presença, registre o que pagou e selecione quem divide igualmente. O registro de pagamento abate a dívida. **Adicionar ao Google Agenda** abre uma cópia editável com uma hora de duração inicial, no fuso de São Paulo.
+
+Em **Jogos**, abra uma sala de quiz, xadrez ou sudoku. O segundo perfil entra e o anfitrião inicia. O quiz tem seis rodadas de 30 segundos; todos responderem encerra a rodada antes do prazo e, depois do prazo, qualquer jogador pode avançar. No xadrez, toque na origem e no destino. No sudoku, complete o seu tabuleiro antes do adversário.
+
+Os óculos são adaptações de duas armações do [DiceBear Pixel Art](https://www.dicebear.com/styles/pixel-art/), sob CC0 1.0. Os personagens de corpo inteiro e seus itens continuam sendo sprites locais do VPB.
+
+### Alternativa de teste em LAN
+
+Com Node 24, execute `npx expo export --platform web` e `npm run group` no computador. Em outro terminal PowerShell, defina `$env:VPB_PUBLIC_URL="http://IP-DO-PC:8787"` e execute `npm run invite -- "Kcaio"`. Abra o link individual no navegador do aparelho, na mesma rede privada, ou cole-o no campo de convite do app. O servidor armazena os dados em SQLite. Reemitir um convite substitui o anterior desse perfil.
+
+### Administração Supabase
+
+O banco privado é criado em `supabase/migrations`. A Edge Function `vpb-group` autentica o convite e executa as regras compartilhadas com o servidor LAN. Apenas o backend chama as funções SQL de leitura e gravação. O cliente usa a chave publicável. Guarde os códigos individuais fora do repositório; o banco guarda somente seus hashes SHA-256. Para substituir um convite, gere 32 bytes aleatórios, entregue sua representação hexadecimal ao membro e atualize o hash do código na tabela privada.
 
 ### Build para TestFlight
 

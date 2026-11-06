@@ -1,7 +1,7 @@
 # VPB · Agenda da turma
 **PRD v1.0 · 6 de novembro de 2026**
 
-Uma agenda privada em português para 28 amigos, disponível em Android e iPhone. O grupo combina os detalhes no WhatsApp. No VPB, publica rolês, reage às ideias e chama a turma para encontros imediatos.
+Uma agenda privada em português para 28 amigos, disponível em Android e iPhone. O grupo combina os detalhes no WhatsApp. No VPB, publica rolés, reage às ideias e chama a turma para encontros imediatos.
 
 ## Entrada e permissões
 Cada pessoa recebe um convite individual vinculado ao próprio perfil. Pode começar a usar a agenda antes de personalizar o avatar.
@@ -13,11 +13,11 @@ Cada pessoa recebe um convite individual vinculado ao próprio perfil. Pode come
 A tela inicial abre no mês atual e permite navegar entre meses. Cada célula mostra o horário e o nome curto do primeiro evento em ordem cronológica. Um indicador como **+2** revela quantos outros existem. Tocar na data abre a lista completa com os status.
 
 ## Publicações
-Qualquer membro pode publicar uma **Sugestão** ou um **Evento confirmado**. Nome do rolê, dia e horário são obrigatórios. Local e descrição são opcionais. A publicação aparece imediatamente na agenda.
+Qualquer membro pode publicar uma **Sugestão** ou um **Evento confirmado**. Nome do rolé, dia e horário são obrigatórios. Local e descrição são opcionais. A publicação aparece imediatamente na agenda.
 
 Cada pessoa pode reagir com aprovação, neutralidade ou reprovação. Aprovar significa gostar da ideia, independentemente de comparecer. O autor pode confirmar uma sugestão, mantendo suas reações e sua contagem como uma postagem. O autor pode editar a própria publicação, e os administradores podem editar qualquer publicação. Alterar dia ou horário zera as reações.
 
-O autor ou um administrador pode cancelar o rolê inteiro com o status **Cancelado** ou **Cancelado pela patroa**. O evento continua no calendário, e o aviso usa o rótulo escolhido.
+O autor ou um administrador pode cancelar o rolé inteiro com o status **Cancelado** ou **Cancelado pela patroa**. O evento continua no calendário, e o aviso usa o rótulo escolhido.
 
 ## Avisos e batsinal
 Cada membro configura separadamente avisos de nova publicação, sugestão confirmada, mudança de dia ou horário e cancelamento. Reações aparecem apenas na agenda.
@@ -31,3 +31,9 @@ Na terceira publicação, o membro desbloqueia simultaneamente o chapéu estilo 
 
 ## Validação para uso real
 Em dois aparelhos com perfis distintos, verificar entrada por convite, sincronização da agenda e restrições de edição. Com a tela bloqueada, testar entrega dos cinco tipos de aviso no Android e no iPhone, incluindo um segundo teste com cada preferência desativada. Preferir Expo para desenvolvimento e escolher a distribuição após esses testes.
+
+## Organização do evento e jogos
+
+Cada evento reúne itens em aberto ou assumidos, identificados por nome e avatar. Cada membro pode oferecer, assumir e liberar o que vai levar. A presença para rateio é explícita e independente das reações. O pagador registra o valor e escolhe os presentes que dividem a despesa em partes iguais. A agenda calcula saldos em centavos e permite registrar acertos.
+
+O Google Agenda recebe uma cópia após confirmação pelo usuário. Na aba Jogos, várias salas podem coexistir. O quiz sincroniza rodadas e pontuação; o xadrez valida turnos e movimentos; o sudoku desafia os jogadores com o mesmo tabuleiro e progresso individual.

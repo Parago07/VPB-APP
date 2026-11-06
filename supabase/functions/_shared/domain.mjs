@@ -43,6 +43,7 @@ export function saveEvent(draft, old, user) {
     );
   const moved = old && (old.date !== date || old.time !== draft.time);
   return {
+    ...old,
     id: old?.id ?? String(Date.now()),
     author: old?.author ?? user,
     date,
@@ -54,54 +55,22 @@ export function saveEvent(draft, old, user) {
     reactions: moved ? {} : (old?.reactions ?? {}),
   };
 }
-export function seed(now = new Date()) {
-  const sample = (id, offset, title, time, author, status, location) => ({
-    id,
-    date: dateKey(
-      new Date(now.getFullYear(), now.getMonth(), now.getDate() + offset),
-    ),
-    title,
-    time,
-    author,
-    status,
-    location,
-    description: "",
-    reactions: {},
-  });
+export function seed() {
   return {
     user: "Kcaio",
     looks: {},
     prefs: {},
     inbox: {},
-    events: [
-      sample(
-        "demo1",
-        0,
-        "Futebol da turma",
-        "19:00",
-        "Zé",
-        statuses[1],
-        "Quadra do bairro",
-      ),
-      sample(
-        "demo2",
-        0,
-        "Pizza depois do jogo",
-        "21:00",
-        "Neto",
-        statuses[0],
-        "",
-      ),
-      sample(
-        "demo3",
-        2,
-        "Churrasco",
-        "12:30",
-        "Mateus Lessa",
-        statuses[0],
-        "Casa do Neto",
-      ),
-    ],
+    events: [],
+    rooms: [],
+  };
+}
+export function migrate(state) {
+  const demoIds = ["demo1", "demo2", "demo3"];
+  return {
+    ...seed(),
+    ...state,
+    events: state.events.filter((e) => !demoIds.includes(e.id)),
   };
 }
 export const mayEdit = (user, event) =>

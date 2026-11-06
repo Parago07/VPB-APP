@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Pressable } from "react-native";
 import { s, Button, ink, green, line, mono } from "./ui";
-import { dateKey, displayDate } from "./domain.mjs";
+import { dateKey, displayDate } from "./supabase/functions/_shared/domain.mjs";
 const months =
   "Janeiro Fevereiro Março Abril Maio Junho Julho Agosto Setembro Outubro Novembro Dezembro".split(
     " ",
@@ -128,15 +128,15 @@ export default function Calendar({
       </View>
       <View style={s.row}>
         <Button dark onPress={create}>
-          + Publicar rolê
+          + Publicar rolé
         </Button>
         <Button active onPress={signal}>
           ϟ Soltar batsinal
         </Button>
       </View>
-      <Text style={s.label}>ROLÊS · {displayDate(day)}</Text>
+      <Text style={s.label}>ROLÉS · {displayDate(day)}</Text>
       {chosen.length === 0 && (
-        <Text style={s.body}>Nenhum rolê neste dia.</Text>
+        <Text style={s.body}>Nenhum rolé neste dia.</Text>
       )}
       {chosen.map((e) => (
         <Pressable

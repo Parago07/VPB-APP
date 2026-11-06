@@ -134,8 +134,8 @@ function layer(grid, rows, x, y) {
   );
 }
 
-export function Avatar({ look, large = false }) {
-  const pixel = large ? 5 : 4;
+export function Avatar({ look, large = false, compact = false }) {
+  const pixel = compact ? 1.5 : large ? 5 : 4;
   const width = look.speaker ? 37 : 22;
   const grid = Array.from({ length: 42 }, () => Array(width).fill("."));
   const [f, s, l] = skin[look.skin] ?? skin[0];
@@ -168,6 +168,11 @@ export function Avatar({ look, large = false }) {
   };
   layer(grid, body, 1, 12);
   layer(grid, haircuts[look.hair] ?? haircuts[0], 1, 9);
+  // Adapted from DiceBear Pixel Art light02 / dark03 (CC0), aligned to VPB eyes.
+  if (look.glasses === 1)
+    layer(grid, ["eeeeeeeeeeee", ".e...ee...e.", ".eeee..eeee."], 5, 16);
+  if (look.glasses === 2)
+    layer(grid, ["eeeeeeeeeeee", ".eQQqqqqQQe.", ".eeeeeeeeee."], 5, 16);
   if (look.hat) layer(grid, caps[look.hat], 1, look.hat === 2 ? 2 : 7);
   if (look.speaker) layer(grid, cabinet, 22, 18);
   const runs = [];

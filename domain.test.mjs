@@ -8,7 +8,7 @@ import {
   saveEvent,
   parseDate,
   mayEdit,
-} from "./domain.mjs";
+} from "./supabase/functions/_shared/domain.mjs";
 
 const draft = {
   day: "06/11/2026",

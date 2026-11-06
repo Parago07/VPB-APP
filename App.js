@@ -1,8 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState } from "react";
 import { View, Text, ScrollView, Switch } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import Storage from "@react-native-async-storage/async-storage";
+import { useGroup } from "./useGroup";
+import EventExtras from "./EventExtras";
+import Games from "./Games";
 import Calendar from "./Calendar";
 import { s, ink, green, mono, Button, Avatar, Field } from "./ui";
 import {
@@ -13,40 +15,51 @@ import {
   dateKey,
   displayDate,
   saveEvent,
-  seed,
   mayEdit,
-  deliver,
-} from "./domain.mjs";
+} from "./supabase/functions/_shared/domain.mjs";
 
-const storageKey = "vpb:prototype:v1";
 const reactions = ["Aprovo", "Neutro", "Reprovo"];
 const today = dateKey(new Date());
 function Prototype() {
-  const [state, set] = useState(null),
-    [error, err] = useState(""),
+  const [error, err] = useState(""),
     [screen, go] = useState("Agenda");
   const [month, setMonth] = useState(new Date()),
     [day, select] = useState(today),
     [id, setId] = useState(null);
   const [draft, form] = useState({}),
     [place, locate] = useState("");
-  const writes = useRef(Promise.resolve());
-  useEffect(() => {
-    Storage.getItem(storageKey)
-      .then((raw) => set(raw ? JSON.parse(raw) : seed()))
-      .catch(() =>
-        err(
-          "Falha ao abrir os dados locais. Reinicie o app para tentar novamente.",
-        ),
-      );
-  }, []);
-  useEffect(() => {
-    if (state)
-      writes.current = writes.current
-        .then(() => Storage.setItem(storageKey, JSON.stringify(state)))
-        .catch(() => err("Falha ao salvar neste aparelho."));
-  }, [state]);
-  if (!state) return <Text style={s.wrap}>{error || "Abrindo agenda…"}</Text>;
+  const group = useGroup(err);
+  const { state } = group;
+  const [code, setCode] = useState("");
+  async function run(action) {
+    try {
+      err("");
+      return await group.act(action);
+    } catch (e) {
+      err(e.message);
+      return null;
+    }
+  }
+  async function connect() {
+    try {
+      await group.link(code.trim());
+      setCode("");
+      err("");
+    } catch (e) {
+      err(e.message);
+    }
+  }
+  if (!state)
+    return (
+      <SafeAreaView style={s.wrap}>
+        <Text>
+          {error || (group.invite ? "Conectando ao grupo…" : "Abrindo agenda…")}
+        </Text>
+        {group.invite && (
+          <Button onPress={() => group.link(null)}>Voltar ao modo local</Button>
+        )}
+      </SafeAreaView>
+    );
   const { user, events } = state,
     event = events.find((e) => e.id === id),
     look = state.looks[user] ?? defaultLook;
@@ -71,50 +84,21 @@ function Prototype() {
     });
     navigate("Publicação");
   };
-  const update = (item, type, message) => {
-    const next = {
-      ...state,
-      events: events.some((e) => e.id === item.id)
-        ? events.map((e) => (e.id === item.id ? item : e))
-        : [...events, item],
-    };
-    set(type ? deliver(next, type, message) : next);
-  };
-  function submit() {
+  async function submit() {
     try {
       const item = saveEvent(draft, event, user);
-      const moved =
-        event && (event.date !== item.date || event.time !== item.time);
-      const type = event ? (moved ? notices[2] : null) : notices[0];
-      update(
-        item,
-        type,
-        type +
-          " · " +
-          item.title +
-          " · " +
-          displayDate(item.date) +
-          " " +
-          item.time,
-      );
-      select(item.date);
-      setMonth(new Date(item.date + "T12:00:00"));
-      open(item.id);
+      const key = await run({ op: "save", id: event?.id, draft });
+      if (key) {
+        select(item.date);
+        setMonth(new Date(item.date + "T12:00:00"));
+        open(event?.id ?? key);
+      }
     } catch (e) {
       err(e.message);
     }
   }
-  const status = (value) =>
-    update(
-      { ...event, status: value },
-      value === statuses[1] ? notices[1] : notices[3],
-      value + " · " + event.title,
-    );
-  const changeLook = (key, value) =>
-    set({
-      ...state,
-      looks: { ...state.looks, [user]: { ...look, [key]: value } },
-    });
+  const status = (value) => run({ op: "status", id: event.id, value });
+  const changeLook = (field, value) => run({ op: "look", field, value });
   const options = (title, key, values) => (
     <View style={{ gap: 6 }}>
       <Text style={s.label}>{title}</Text>
@@ -151,9 +135,6 @@ function Prototype() {
           >
             ▦ VPB
           </Text>
-          <Text style={{ color: "white", fontFamily: mono }}>
-            Agenda da turma
-          </Text>
         </View>
       </View>
       <ScrollView
@@ -161,6 +142,12 @@ function Prototype() {
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={s.wrap}
       >
+        {group.invite && !group.connected && (
+          <Text>Reconectando ao grupo…</Text>
+        )}
+        {screen === "Jogos" && (
+          <Games state={state} run={run} group={!!group.invite} />
+        )}
         {screen === "Agenda" ? (
           <Calendar
             {...{ month, day, select, events, open }}
@@ -180,10 +167,12 @@ function Prototype() {
             }}
           />
         ) : (
-          <View style={s.spread}>
-            <Text style={s.heading}>{screen}</Text>
-            <Button onPress={() => navigate("Agenda")}>Agenda</Button>
-          </View>
+          screen !== "Jogos" && (
+            <View style={s.spread}>
+              <Text style={s.heading}>{screen}</Text>
+              <Button onPress={() => navigate("Agenda")}>Agenda</Button>
+            </View>
+          )
         )}
         {screen === "Publicação" && (
           <>
@@ -201,7 +190,7 @@ function Prototype() {
               </View>
             )}
             {[
-              ["title", "Nome do rolê", "Futebol"],
+              ["title", "Nome do rolé", "Futebol"],
               ["day", "Dia", "DD/MM/AAAA"],
               ["time", "Horário", "HH:MM"],
               ["location", "Local (opcional)", ""],
@@ -240,24 +229,26 @@ function Prototype() {
                 <Button
                   key={v}
                   active={event.reactions[user] === v}
-                  onPress={() =>
-                    update({
-                      ...event,
-                      reactions: { ...event.reactions, [user]: v },
-                    })
-                  }
+                  onPress={() => run({ op: "react", id: event.id, value: v })}
                 >
                   {v} ·{" "}
                   {Object.values(event.reactions).filter((x) => x === v).length}
                 </Button>
               ))}
             </View>
+            <EventExtras
+              key={event.id}
+              event={event}
+              state={state}
+              run={run}
+              err={err}
+            />
             {mayEdit(user, event) && (
               <View style={s.row}>
                 <Button onPress={() => edit(event)}>Editar</Button>
                 {event.author === user && event.status === statuses[0] && (
                   <Button active onPress={() => status(statuses[1])}>
-                    Confirmar rolê
+                    Confirmar rolé
                   </Button>
                 )}
                 {statuses.slice(0, 2).includes(event.status) &&
@@ -282,21 +273,17 @@ function Prototype() {
               {user} enviou um batsinal: '{place.trim() || "nome do local"}'
             </Text>
             <Text style={s.label}>
-              Simulação local · entrega nos avisos dos outros perfis de teste.
+              {group.invite
+                ? "Entrega nos avisos dos membros conectados ao grupo."
+                : "Simulação local · entrega nos avisos dos outros perfis de teste."}
             </Text>
             <Button
               active
-              onPress={() => {
-                if (!place.trim()) return err("Informe o local.");
-                set(
-                  deliver(
-                    state,
-                    "Batsinal",
-                    user + " enviou um batsinal: '" + place.trim() + "'",
-                  ),
-                );
-                navigate("Agenda");
-                err("Batsinal enviado aos perfis locais com o aviso ativo.");
+              onPress={async () => {
+                if (await run({ op: "signal", place })) {
+                  navigate("Agenda");
+                  err("Batsinal enviado.");
+                }
               }}
             >
               Soltar batsinal
@@ -313,6 +300,7 @@ function Prototype() {
               </View>
             </View>
             {options("CABELO", "hair", ["Curto", "Espetado", "Franja"])}
+            {options("ÓCULOS", "glasses", ["Sem óculos", "Armação", "Escuros"])}
             {options("PELE", "skin", ["Mel", "Castanha", "Escura", "Clara"])}
             {options("ROUPA", "shirt", ["Terracota", "Verde", "Azul", "Lilás"])}
             {posts >= 3 ? (
@@ -334,9 +322,24 @@ function Prototype() {
                 Na 3ª postagem você ganha os dois chapéus e a Balthinha.
               </Text>
             )}
-            <Button onPress={() => navigate("Perfis de teste")}>
-              Trocar perfil de teste
-            </Button>
+            {group.invite ? (
+              <Button onPress={() => group.link(null)}>
+                Desconectar do grupo
+              </Button>
+            ) : (
+              <>
+                <Field
+                  name="Convite privado da turma"
+                  value={code}
+                  onChangeText={setCode}
+                  maxLength={512}
+                />
+                <Button onPress={connect}>Conectar ao grupo</Button>
+                <Button onPress={() => navigate("Perfis de teste")}>
+                  Trocar perfil de teste
+                </Button>
+              </>
+            )}
           </>
         )}
         {screen === "Perfis de teste" && (
@@ -346,7 +349,7 @@ function Prototype() {
                 key={name}
                 active={name === user}
                 onPress={() => {
-                  set({ ...state, user: name });
+                  group.switchUser(name);
                   navigate("Perfil");
                 }}
               >
@@ -365,18 +368,16 @@ function Prototype() {
                   accessibilityLabel={v}
                   value={state.prefs[user]?.[v] !== false}
                   onValueChange={(on) =>
-                    set({
-                      ...state,
-                      prefs: {
-                        ...state.prefs,
-                        [user]: { ...state.prefs[user], [v]: on },
-                      },
-                    })
+                    run({ op: "pref", field: v, value: on })
                   }
                 />
               </View>
             ))}
-            <Text style={s.label}>AVISOS SIMULADOS NESTE APARELHO</Text>
+            <Text style={s.label}>
+              {group.invite
+                ? "AVISOS DA TURMA"
+                : "AVISOS SIMULADOS NESTE APARELHO"}
+            </Text>
             {[...(state.inbox[user] ?? [])].reverse().map((v, i) => (
               <Text style={s.box} key={i}>
                 {v}
@@ -402,7 +403,7 @@ function Prototype() {
           },
         ]}
       >
-        {["Agenda", "Avisos", "Perfil"].map((v) => (
+        {["Agenda", "Jogos", "Avisos", "Perfil"].map((v) => (
           <Button key={v} active={screen === v} onPress={() => navigate(v)}>
             {v}
           </Button>
@@ -418,4 +419,3 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
-

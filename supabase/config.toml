@@ -1,0 +1,3 @@
+project_id = "vpb"
+[functions.vpb-group]
+verify_jwt = false
