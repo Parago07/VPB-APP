@@ -6,7 +6,7 @@ export default function Impostor({ r, user, play }) {
     [revealed, reveal] = useState(false);
   if (!r.players.includes(user)) return <Text>Sessão em andamento.</Text>;
   const send = (op, args = {}) => play({ op, round: r.round, ...args });
-  const writing = ["Perguntas", "Respostas"].includes(r.stage);
+  const writing = r.stage === "Respostas";
   return (
     <View style={s.box}>
       <Text style={s.label}>RODADA {r.round}</Text>
@@ -19,7 +19,7 @@ export default function Impostor({ r, user, play }) {
             <Text style={s.body}>
               {r.role === "Impostor"
                 ? "Você é o impostor. Tente passar despercebido."
-                : "Você é da turma. Descubra quem está blefando."}
+                : "A pessoa é " + r.person + ". Dê uma pista sem dizer o nome."}
             </Text>
           )}
         </>
@@ -31,11 +31,7 @@ export default function Impostor({ r, user, play }) {
           <>
             {r.prompt && <Text style={s.body}>{r.prompt}</Text>}
             <Field
-              name={
-                r.stage === "Perguntas"
-                  ? "Sua pergunta anônima"
-                  : "Sua resposta"
-              }
+              name="Sua resposta"
               value={text}
               onChangeText={edit}
               maxLength={200}
@@ -44,14 +40,14 @@ export default function Impostor({ r, user, play }) {
               dark
               onPress={async () => {
                 if (
-                  await send(r.stage === "Perguntas" ? "ask" : "respond", {
+                  await send("respond", {
                     text,
                   })
                 )
                   edit("");
               }}
             >
-              Enviar {r.stage === "Perguntas" ? "pergunta" : "resposta"}
+              Enviar resposta
             </Button>
           </>
         ))}
@@ -75,6 +71,7 @@ export default function Impostor({ r, user, play }) {
       )}
       {r.last && (
         <>
+          <Text>Pessoa secreta: {r.last.person}</Text>
           <Text style={s.body}>{r.last.impostor} era o impostor.</Text>
           <Text>+1 ponto: {r.last.winners.join(", ")}</Text>
         </>

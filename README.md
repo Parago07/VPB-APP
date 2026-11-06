@@ -33,7 +33,7 @@ Nos detalhes do evento, use **Quem leva o quê?** para assumir ou liberar itens.
 
 O Quiz tradicional segue ao vivo. No Xadrez, a partida começa quando o segundo jogador entra; cada pessoa faz seu movimento quando puder. O ranking soma 1 ponto por vitória e 0,5 por empate. O Sudoku está pausado para uma futura classificação por tempo de resolução.
 
-No Impostor, reúna pelo menos três membros. A cada rodada, apenas o próprio jogador vê seu papel. Cada membro envia uma pergunta anônima e recebe por sorteio uma pergunta de outra pessoa. Após todos responderem, os jogadores leem as respostas atribuídas a seus respondentes e votam em segredo. Cada acerto vale 1 ponto. Se ninguém acertar, o impostor recebe 1 ponto. O anfitrião pode iniciar outra rodada com o mesmo placar ou encerrar a sessão.
+No Impostor, reúna pelo menos três membros. A cada rodada, apenas o próprio jogador vê seu papel. O servidor sorteia uma pessoa da mesa, uma celebridade ou alguém do futebol. Apenas a turma recebe o nome. Cada jogador, incluindo o impostor, recebe uma pergunta diferente sorteada de um banco de 30 perguntas abertas e responde sem citar o nome. Após todos responderem, os jogadores leem as respostas atribuídas a seus respondentes e votam em segredo. Cada acerto vale 1 ponto. Se ninguém acertar, o impostor recebe 1 ponto. O anfitrião pode iniciar outra rodada com o mesmo placar ou encerrar a sessão.
 
 Os óculos são adaptações de duas armações do [DiceBear Pixel Art](https://www.dicebear.com/styles/pixel-art/), sob CC0 1.0. Os personagens de corpo inteiro e seus itens continuam sendo sprites locais do VPB.
 

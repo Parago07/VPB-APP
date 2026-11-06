@@ -20,16 +20,14 @@ test("Sessão privada, sorteio um a um, apuração única e pontos acumulados", 
       1,
     );
     assert.equal(roomView(r, "Fred").role, undefined);
-    for (const u of players) {
-      r = action(u, "ask", { text: "Pergunta de teste " + u });
-      assert.throws(() => action(u, "ask", { text: "Repetida" }));
-    }
+    assert.equal(roomView(r, impostor).person, undefined);
+    assert.equal(roomView(r, "Fred").person, undefined);
     const prompts = players.map((u) => roomView(r, u).prompt);
-    assert.equal(new Set(prompts).size, 4);
+    assert.equal(new Set(prompts).size, players.length);
     for (const u of players) {
       const view = roomView(r, u);
-      assert.notEqual(view.prompt, "Pergunta de teste " + u);
       assert.equal(view.secret, undefined);
+      if (u !== impostor) assert.equal(view.person, r.secret.person);
       r = action(u, "respond", { text: "Resposta " + u });
     }
     for (const u of players) {

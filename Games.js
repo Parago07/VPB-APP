@@ -1,3 +1,4 @@
+import { categories } from "./supabase/functions/_shared/pessoas.mjs";
 import React, { useEffect, useState } from "react";
 import { View, Text, Pressable } from "react-native";
 import { Button, s, green, ink } from "./ui";
@@ -59,7 +60,8 @@ export default function Games({ state, run, group }) {
   const [id, choose] = useState(null),
     [sel, select] = useState(null),
     [now, tick] = useState(Date.now()),
-    [promotion, promote] = useState("q");
+    [promotion, promote] = useState("q"),
+    [category, setCategory] = useState("Misturado");
   const r = state.rooms.find((x) => x.id === id),
     u = state.user;
   const play = (a) => run({ op: "room.play", id, play: a });
@@ -134,6 +136,22 @@ export default function Games({ state, run, group }) {
         <Text>{r.players.join(" · ")}</Text>
         <Text style={s.label}>{r.stage}</Text>
       </View>
+      {r.kind === "Impostor" && r.stage === "Espera" && r.host === u && (
+        <View style={s.box}>
+          <Text style={s.label}>PESSOA SECRETA</Text>
+          <View style={s.row}>
+            {categories.map((c) => (
+              <Button
+                key={c}
+                active={category === c}
+                onPress={() => setCategory(c)}
+              >
+                {c}
+              </Button>
+            ))}
+          </View>
+        </View>
+      )}
       {r.stage === "Espera" &&
         (!joined ? (
           <Button onPress={() => play({ op: "join" })}>
@@ -147,7 +165,7 @@ export default function Games({ state, run, group }) {
               : "Aguardando outro jogador entrar."}
           </Text>
         ) : r.host === u ? (
-          <Button dark onPress={() => play({ op: "start" })}>
+          <Button dark onPress={() => play({ op: "start", category })}>
             Iniciar partida
           </Button>
         ) : (

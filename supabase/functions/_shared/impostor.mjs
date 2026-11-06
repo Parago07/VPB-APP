@@ -1,3 +1,4 @@
+import { categories, celebrities, football, prompts } from "./pessoas.mjs";
 function shuffle(players) {
   const order = [...players];
   for (let i = order.length - 1; i > 0; i--) {
@@ -6,13 +7,25 @@ function shuffle(players) {
   }
   return order;
 }
-function start(r) {
-  const impostor = shuffle(r.players)[0];
+function start(r, category = r.category ?? "Misturado") {
+  if (!categories.includes(category)) throw Error("Categoria inválida.");
+  const choices = [r.players, celebrities, football];
+  const pool =
+    category === "Misturado"
+      ? shuffle(choices)[0]
+      : choices[categories.indexOf(category) - 1];
+  const person = shuffle(pool.filter((n) => n !== r.last?.person))[0];
+  const questions = shuffle(prompts),
+    impostor = shuffle(r.players)[0];
+  const assigned = Object.fromEntries(
+    r.players.map((n, i) => [n, questions[i]]),
+  );
   return {
     ...r,
-    stage: "Perguntas",
+    category,
+    stage: "Respostas",
     round: r.round + 1,
-    secret: { impostor, questions: {}, assigned: {}, responses: {}, votes: {} },
+    secret: { impostor, person, assigned, responses: {}, votes: {} },
     last: null,
   };
 }
@@ -36,7 +49,7 @@ export function impostorTurn(r, user, a) {
       (!initial && a.round !== r.round)
     )
       throw Error("Rodada indisponível.");
-    return start(r);
+    return start(r, a.category);
   }
   if (
     a.op === "finish" &&
@@ -47,19 +60,6 @@ export function impostorTurn(r, user, a) {
     return { ...r, stage: "Encerrada" };
   if (a.round !== r.round) throw Error("Esta rodada já passou.");
   const s = { ...r.secret };
-  if (r.stage === "Perguntas" && a.op === "ask") {
-    s.questions = once(s.questions, user, entry(a.text));
-    if (Object.keys(s.questions).length < r.players.length)
-      return { ...r, secret: s };
-    const order = shuffle(r.players);
-    for (let i = 0; i < order.length; i++)
-      s.assigned = {
-        ...s.assigned,
-        [order[i]]: s.questions[order[(i + 1) % order.length]],
-      };
-    s.questions = {};
-    return { ...r, secret: s, stage: "Respostas" };
-  }
   if (r.stage === "Respostas" && a.op === "respond") {
     s.responses = once(s.responses, user, entry(a.text));
     return {
@@ -86,7 +86,7 @@ export function impostorTurn(r, user, a) {
       secret: null,
       scores,
       stage: "Resultado",
-      last: { impostor: s.impostor, winners },
+      last: { impostor: s.impostor, person: s.person, winners },
     };
   }
   throw Error("Esta etapa já terminou.");
@@ -108,7 +108,7 @@ export function roomView(r, user) {
   const s = r.secret;
   if (!s) return view;
   view.role = s.impostor === user ? "Impostor" : "Turma";
-  if (stage === "Perguntas") view.sent = Object.hasOwn(s.questions, user);
+  if (view.role === "Turma") view.person = s.person;
   if (stage === "Respostas") {
     view.prompt = s.assigned[user];
     view.sent = Object.hasOwn(s.responses, user);
