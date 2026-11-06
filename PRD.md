@@ -36,4 +36,8 @@ Em dois aparelhos com perfis distintos, verificar entrada por convite, sincroniz
 
 Cada evento reúne itens em aberto ou assumidos, identificados por nome e avatar. Cada membro pode oferecer, assumir e liberar o que vai levar. A presença para rateio é explícita e independente das reações. O pagador registra o valor e escolhe os presentes que dividem a despesa em partes iguais. A agenda calcula saldos em centavos e permite registrar acertos.
 
-O Google Agenda recebe uma cópia após confirmação pelo usuário. Na aba Jogos, várias salas podem coexistir. O quiz sincroniza rodadas e pontuação; o xadrez valida turnos e movimentos; o sudoku desafia os jogadores com o mesmo tabuleiro e progresso individual.
+O Google Agenda recebe uma cópia após confirmação pelo usuário.
+
+O Quiz tradicional segue ao vivo. No Xadrez, a partida começa quando o segundo jogador entra; cada pessoa faz seu movimento quando puder. O ranking soma 1 ponto por vitória e 0,5 por empate. O Sudoku está pausado para uma futura classificação por tempo de resolução.
+
+No Impostor, reúna pelo menos três membros. A cada rodada, apenas o próprio jogador vê seu papel. Cada membro envia uma pergunta anônima e recebe por sorteio uma pergunta de outra pessoa. Após todos responderem, os jogadores leem as respostas atribuídas a seus respondentes e votam em segredo. Cada acerto vale 1 ponto. Se ninguém acertar, o impostor recebe 1 ponto. O anfitrião pode iniciar outra rodada com o mesmo placar ou encerrar a sessão.

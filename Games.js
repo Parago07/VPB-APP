@@ -5,7 +5,9 @@ import {
   games,
   question,
   chessBoard,
+  chessRanking,
 } from "./supabase/functions/_shared/games.mjs";
+import Impostor from "./Impostor";
 const glyph = {
   w: { p: "♙", n: "♘", b: "♗", r: "♖", q: "♕", k: "♔" },
   b: { p: "♟", n: "♞", b: "♝", r: "♜", q: "♛", k: "♚" },
@@ -89,24 +91,38 @@ export default function Games({ state, run, group }) {
             </Button>
           ))}
         </View>
-        {[...state.rooms].reverse().map((x) => (
-          <View key={x.id} style={s.box}>
-            <Text style={s.body}>
-              {x.kind} · {x.host}
+        <Text style={s.label}>RANKING DE XADREZ</Text>
+        {chessRanking(state.rooms).length ? (
+          chessRanking(state.rooms).map(([name, points]) => (
+            <Text key={name}>
+              {name} · {points.toLocaleString("pt-BR")} pts
             </Text>
-            <Text>
-              {x.stage} · {x.players.length} jogadores
-            </Text>
-            <Button
-              onPress={() => {
-                choose(x.id);
-                select(null);
-              }}
-            >
-              Abrir sala
-            </Button>
-          </View>
-        ))}
+          ))
+        ) : (
+          <Text>O ranking começa na primeira partida concluída.</Text>
+        )}
+        <Text style={s.label}>Sudoku pausado · ranking por tempo previsto</Text>
+        {[...state.rooms]
+          .filter((x) => x.kind !== "Sudoku")
+          .reverse()
+          .map((x) => (
+            <View key={x.id} style={s.box}>
+              <Text style={s.body}>
+                {x.kind} · {x.host}
+              </Text>
+              <Text>
+                {x.stage} · {x.players.length} jogadores
+              </Text>
+              <Button
+                onPress={() => {
+                  choose(x.id);
+                  select(null);
+                }}
+              >
+                Abrir sala
+              </Button>
+            </View>
+          ))}
       </>
     );
   const joined = r.players.includes(u);
@@ -123,8 +139,13 @@ export default function Games({ state, run, group }) {
           <Button onPress={() => play({ op: "join" })}>
             Entrar na partida
           </Button>
-        ) : r.host === u && r.players.length < 2 ? (
-          <Text>Aguardando outro jogador entrar.</Text>
+        ) : r.host === u &&
+          r.players.length < (r.kind === "Impostor" ? 3 : 2) ? (
+          <Text>
+            {r.kind === "Impostor"
+              ? "São necessários três jogadores."
+              : "Aguardando outro jogador entrar."}
+          </Text>
         ) : r.host === u ? (
           <Button dark onPress={() => play({ op: "start" })}>
             Iniciar partida
@@ -132,6 +153,14 @@ export default function Games({ state, run, group }) {
         ) : (
           <Text>Aguardando o anfitrião iniciar.</Text>
         ))}
+      {r.kind === "Impostor" && r.stage !== "Espera" && (
+        <Impostor
+          key={r.id + ":" + r.round + ":" + u}
+          r={r}
+          user={u}
+          play={play}
+        />
+      )}
       {r.stage === "Jogando" && joined && r.kind === "Quiz" && (
         <View style={s.box}>
           <Text style={s.label}>
@@ -176,7 +205,8 @@ export default function Games({ state, run, group }) {
           return (
             <>
               <Text>
-                Brancas: {r.players[0]} · Pretas: {r.players[1]}
+                Jogue na sua vez, sem limite de tempo. Brancas: {r.players[0]} ·
+                Pretas: {r.players[1]}
               </Text>
               {r.stage === "Jogando" && (
                 <Text>
@@ -237,39 +267,6 @@ export default function Games({ state, run, group }) {
             </>
           );
         })()}
-      {r.kind === "Sudoku" && joined && r.stage !== "Espera" && (
-        <>
-          <Text>Complete seu tabuleiro primeiro.</Text>
-          <Grid
-            n={9}
-            cell={(i, row, col) => {
-              const n = (r.boards[u] ?? r.clues)[i];
-              return {
-                label: "Linha " + (row + 1) + ", coluna " + (col + 1),
-                bold: r.clues[i] !== "0",
-                text: n === "0" ? "" : n,
-                bg:
-                  i === sel ? green : r.clues[i] !== "0" ? "#e1e8da" : "white",
-                press: () => select(i),
-              };
-            }}
-          />
-          {r.stage === "Jogando" && (
-            <View style={s.row}>
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((n) => (
-                <Button
-                  key={n}
-                  onPress={() =>
-                    play({ op: "digit", index: sel, value: String(n) })
-                  }
-                >
-                  {n || "Apagar"}
-                </Button>
-              ))}
-            </View>
-          )}
-        </>
-      )}
       {r.stage === "Encerrada" && r.result && (
         <Text style={s.body}>
           {r.result === "Empate" ? "Empate" : "Vencedor: " + r.result}

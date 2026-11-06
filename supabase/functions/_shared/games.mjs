@@ -1,5 +1,6 @@
 import { Chess } from "chess.js";
-export const games = ["Quiz", "Xadrez", "Sudoku"];
+import { impostorTurn } from "./impostor.mjs";
+export const games = ["Impostor", "Quiz", "Xadrez"];
 export const questions = [
   [
     "Qual planeta tem a Grande Mancha Vermelha?",
@@ -24,31 +25,22 @@ export const questions = [
     2,
   ],
 ];
-const puzzle =
-  "530070000600195000098000060800060003400803001700020006060000280000419005000080079";
-const solution =
-  "534678912672195348198342567859761423426853791713924856961537284287419635345286179";
-function digits(str, offset) {
-  return str.replace(/[1-9]/g, (n) =>
-    String(1 + ((Number(n) - 1 + offset) % 9)),
-  );
-}
 export function createRoom(kind, user, id) {
   if (!games.includes(kind)) throw Error("Escolha um jogo.");
-  const offset = Math.floor(Math.random() * 9);
+
   return {
     id,
     kind,
     host: user,
     players: [user],
     stage: "Espera",
-    offset,
+
     round: 0,
     scores: {},
     answers: {},
     moves: [],
     boards: {},
-    clues: digits(puzzle, offset),
+
     first: Math.floor(Math.random() * questions.length),
   };
 }
@@ -63,13 +55,19 @@ export function chessBoard(room) {
 export function play(room, user, action, now = Date.now()) {
   const r = { ...room },
     { op } = action;
+  if (r.kind === "Sudoku") throw Error("Sudoku pausado.");
   if (op === "join") {
     if (r.players.includes(user)) return r;
     if (r.stage !== "Espera" || (r.kind === "Xadrez" && r.players.length >= 2))
       throw Error("Sala fechada para entrada.");
-    return { ...r, players: [...r.players, user] };
+    return {
+      ...r,
+      players: [...r.players, user],
+      stage: r.kind === "Xadrez" ? "Jogando" : r.stage,
+    };
   }
   if (!r.players.includes(user)) throw Error("Entre na sala primeiro.");
+  if (r.kind === "Impostor") return impostorTurn(r, user, action);
   if (op === "start") {
     if (r.host !== user || r.stage !== "Espera" || r.players.length < 2)
       throw Error("Aguarde pelo menos dois jogadores e o anfitrião.");
@@ -123,24 +121,21 @@ export function play(room, user, action, now = Date.now()) {
       result: b.isCheckmate() ? user : b.isDraw() ? "Empate" : null,
     };
   }
-  if (r.kind === "Sudoku" && op === "digit") {
-    const { index, value } = action;
-    if (
-      !Number.isInteger(index) ||
-      r.clues[index] !== "0" ||
-      !/^[0-9]$/.test(value)
-    )
-      throw Error("Escolha uma casa vazia e um dígito.");
-    const grid = (r.boards[user] ?? r.clues).split("");
-    grid[index] = String(value);
-    const board = grid.join(""),
-      won = board === digits(solution, r.offset);
-    return {
-      ...r,
-      boards: { ...r.boards, [user]: board },
-      stage: won ? "Encerrada" : r.stage,
-      result: won ? user : null,
-    };
-  }
   throw Error("Jogada inválida.");
+}
+
+export function chessRanking(rooms) {
+  const scores = new Map();
+  for (const room of rooms) {
+    if (room.kind !== "Xadrez" || room.stage !== "Encerrada" || !room.result)
+      continue;
+    for (const player of room.players) {
+      const points =
+        room.result === "Empate" ? 0.5 : Number(room.result === player);
+      scores.set(player, (scores.get(player) ?? 0) + points);
+    }
+  }
+  return [...scores].sort(
+    (a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "pt-BR"),
+  );
 }

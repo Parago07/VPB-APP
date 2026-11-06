@@ -1,3 +1,4 @@
+import { roomView } from "./supabase/functions/_shared/impostor.mjs";
 import { createServer } from "node:http";
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
@@ -70,13 +71,7 @@ function snapshot(sock) {
       user: u,
       prefs: { [u]: state.prefs[u] ?? {} },
       inbox: { [u]: state.inbox[u] ?? [] },
-      rooms: state.rooms.map((r) => ({
-        ...r,
-        boards: { [u]: r.boards[u] },
-        answers: Object.fromEntries(
-          Object.keys(r.answers).map((n) => [n, true]),
-        ),
-      })),
+      rooms: state.rooms.map((r) => roomView(r, u)),
     },
   });
 }

@@ -31,7 +31,9 @@ O servidor verifica o convite e as permissões em cada ação. Ele grava altera�
 
 Nos detalhes do evento, use **Quem leva o quê?** para assumir ou liberar itens. Em **Divisão de contas**, confirme sua presença, registre o que pagou e selecione quem divide igualmente. O registro de pagamento abate a dívida. **Adicionar ao Google Agenda** abre uma cópia editável com uma hora de duração inicial, no fuso de São Paulo.
 
-Em **Jogos**, abra uma sala de quiz, xadrez ou sudoku. O segundo perfil entra e o anfitrião inicia. O quiz tem seis rodadas de 30 segundos; todos responderem encerra a rodada antes do prazo e, depois do prazo, qualquer jogador pode avançar. No xadrez, toque na origem e no destino. No sudoku, complete o seu tabuleiro antes do adversário.
+O Quiz tradicional segue ao vivo. No Xadrez, a partida começa quando o segundo jogador entra; cada pessoa faz seu movimento quando puder. O ranking soma 1 ponto por vitória e 0,5 por empate. O Sudoku está pausado para uma futura classificação por tempo de resolução.
+
+No Impostor, reúna pelo menos três membros. A cada rodada, apenas o próprio jogador vê seu papel. Cada membro envia uma pergunta anônima e recebe por sorteio uma pergunta de outra pessoa. Após todos responderem, os jogadores leem as respostas atribuídas a seus respondentes e votam em segredo. Cada acerto vale 1 ponto. Se ninguém acertar, o impostor recebe 1 ponto. O anfitrião pode iniciar outra rodada com o mesmo placar ou encerrar a sessão.
 
 Os óculos são adaptações de duas armações do [DiceBear Pixel Art](https://www.dicebear.com/styles/pixel-art/), sob CC0 1.0. Os personagens de corpo inteiro e seus itens continuam sendo sprites locais do VPB.
 

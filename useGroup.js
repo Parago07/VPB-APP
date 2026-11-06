@@ -1,3 +1,4 @@
+import { roomView } from "./supabase/functions/_shared/impostor.mjs";
 import { useEffect, useRef, useState } from "react";
 import Storage from "@react-native-async-storage/async-storage";
 import { cloudConnection, projectURL } from "./cloud";
@@ -157,7 +158,12 @@ export function useGroup(err) {
     }
   }
   return {
-    state: invite ? remote : local,
+    state: invite
+      ? remote
+      : local && {
+          ...local,
+          rooms: local.rooms.map((r) => roomView(r, local.user)),
+        },
     invite,
     link,
     connected,

@@ -1,3 +1,4 @@
+import { roomView } from "../_shared/impostor.mjs";
 import { applyAction } from "../_shared/features.mjs";
 const url = Deno.env.get("SUPABASE_URL")!;
 const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -29,11 +30,7 @@ function visible(s: any, u: string) {
     user: u,
     prefs: { [u]: s.prefs[u] ?? {} },
     inbox: { [u]: s.inbox[u] ?? [] },
-    rooms: s.rooms.map((r: any) => ({
-      ...r,
-      boards: { [u]: r.boards[u] },
-      answers: Object.fromEntries(Object.keys(r.answers).map((n) => [n, true])),
-    })),
+    rooms: s.rooms.map((r: any) => roomView(r, u)),
   };
 }
 Deno.serve(async (req) => {
