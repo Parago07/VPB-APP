@@ -4,6 +4,15 @@
     "slug": "vpb-agenda",
     "version": "0.1.0",
     "orientation": "portrait",
-    "userInterfaceStyle": "light"
+    "userInterfaceStyle": "light",
+    "extra": {
+      "eas": {
+        "projectId": "ca571667-efcf-4a66-a053-4893a77a2d2c"
+      }
+    },
+    "owner": "cparagoa",
+    "ios": {
+      "bundleIdentifier": "com.parago07.vpbagenda"
+    }
   }
 }

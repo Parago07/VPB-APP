@@ -1,0 +1,7 @@
+{
+  "cli": { "appVersionSource": "remote" },
+  "build": {
+    "preview": { "distribution": "internal" },
+    "simulator": { "distribution": "internal", "ios": { "simulator": true } }
+  }
+}
