@@ -26,6 +26,18 @@ export const pad = (n) => String(n).padStart(2, "0");
 export const dateKey = (d) =>
   [d.getFullYear(), pad(d.getMonth() + 1), pad(d.getDate())].join("-");
 export const displayDate = (key) => key.split("-").reverse().join("/");
+export function parseBirthday(value) {
+  const m = /^(\d{1,2})\/(\d{1,2})(?:\/(\d{4}))?$/.exec(
+    typeof value === "string" ? value.trim() : "",
+  );
+  if (!m) return null;
+  const [d, mo] = [Number(m[1]), Number(m[2])],
+    y = m[3] ? Number(m[3]) : 2000;
+  const date = new Date(y, mo - 1, d);
+  if (date.getMonth() !== mo - 1 || date.getDate() !== d) return null;
+  if (m[3] && (y < 1900 || date > new Date())) return null;
+  return pad(mo) + "-" + pad(d);
+}
 export function parseDate(value) {
   const [d, m, y] = value.split("/").map(Number);
   const date = new Date(y, m - 1, d);
@@ -63,6 +75,7 @@ export function seed() {
     inbox: {},
     events: [],
     rooms: [],
+    birthdays: {},
   };
 }
 export function migrate(state) {

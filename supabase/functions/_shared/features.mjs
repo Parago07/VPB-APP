@@ -6,6 +6,7 @@ import {
   mayEdit,
   deliver,
   defaultLook,
+  parseBirthday,
 } from "./domain.mjs";
 import { createRoom, play } from "./games.mjs";
 const fail = (message) => {
@@ -137,6 +138,14 @@ export function applyAction(state, user, a) {
         ...state.looks,
         [user]: { ...defaultLook, ...state.looks[user], [a.field]: a.value },
       },
+    };
+  }
+  if (op === "birthday") {
+    const value = parseBirthday(a.value);
+    if (!value) fail("Informe o aniversário como DD/MM, por exemplo 12/03.");
+    return {
+      ...state,
+      birthdays: { ...state.birthdays, [user]: value },
     };
   }
   if (op === "pref" && notices.includes(a.field))

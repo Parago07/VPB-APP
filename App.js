@@ -30,7 +30,8 @@ function Prototype() {
     [place, locate] = useState("");
   const group = useGroup(err);
   const { state } = group;
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState(""),
+    [birth, setBirth] = useState(null);
   async function run(action) {
     try {
       err("");
@@ -49,6 +50,27 @@ function Prototype() {
       err(e.message);
     }
   }
+  const header = (
+    <View style={{ backgroundColor: ink }}>
+      <View
+        style={[
+          s.spread,
+          { width: "100%", maxWidth: 740, alignSelf: "center", padding: 14 },
+        ]}
+      >
+        <Text
+          style={{
+            color: green,
+            fontFamily: mono,
+            fontWeight: "900",
+            fontSize: 22,
+          }}
+        >
+          ▦ VPB
+        </Text>
+      </View>
+    </View>
+  );
   if (!state)
     return (
       <SafeAreaView style={s.wrap}>
@@ -64,6 +86,75 @@ function Prototype() {
     event = events.find((e) => e.id === id),
     look = state.looks[user] ?? defaultLook;
   const posts = events.filter((e) => e.author === user).length;
+  const birthday = state.birthdays?.[user],
+    birthValue = birth ?? (birthday ? displayDate(birthday) : "");
+  async function saveBirthday() {
+    if (await run({ op: "birthday", value: birthValue })) {
+      setBirth(null);
+      err("Aniversário salvo na agenda da turma.");
+    }
+  }
+  const birthField = (
+    <>
+      <Field
+        name="Aniversário"
+        placeholder="DD/MM"
+        value={birthValue}
+        onChangeText={setBirth}
+        maxLength={10}
+        keyboardType="numbers-and-punctuation"
+      />
+      <Button dark onPress={saveBirthday}>
+        Salvar aniversário
+      </Button>
+    </>
+  );
+  // Primeira entrada: o aniversário é obrigatório antes de abrir a agenda.
+  // Servidores sem suporte não enviam "birthdays" e não bloqueiam o app.
+  if (state.birthdays && !birthday)
+    return (
+      <SafeAreaView style={s.page}>
+        <StatusBar style="dark" />
+        {header}
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={s.wrap}
+        >
+          <Text style={s.label}>
+            {group.invite
+              ? "PRIMEIRO ACESSO"
+              : "MODO DE TESTE · PERFIL " + user.toUpperCase()}
+          </Text>
+          <Text style={s.heading}>Olá, {user}!</Text>
+          <Text style={s.body}>
+            Quando é o seu aniversário? A data entra na agenda da turma todos os
+            anos.
+          </Text>
+          {birthField}
+          {!!error && (
+            <Text accessibilityRole="alert" style={s.body}>
+              {error}
+            </Text>
+          )}
+          {!group.invite && (
+            <View style={[s.box, { marginTop: 10 }]}>
+              <Text style={s.label}>RECEBEU UM CONVITE?</Text>
+              <Text>
+                Conecte-se ao grupo antes para salvar o aniversário no seu
+                perfil.
+              </Text>
+              <Field
+                name="Convite privado da turma"
+                value={code}
+                onChangeText={setCode}
+                maxLength={512}
+              />
+              <Button onPress={connect}>Conectar ao grupo</Button>
+            </View>
+          )}
+        </ScrollView>
+      </SafeAreaView>
+    );
   const navigate = (name) => {
     err("");
     go(name);
@@ -118,25 +209,7 @@ function Prototype() {
   return (
     <SafeAreaView style={s.page}>
       <StatusBar style="dark" />
-      <View style={{ backgroundColor: ink }}>
-        <View
-          style={[
-            s.spread,
-            { width: "100%", maxWidth: 740, alignSelf: "center", padding: 14 },
-          ]}
-        >
-          <Text
-            style={{
-              color: green,
-              fontFamily: mono,
-              fontWeight: "900",
-              fontSize: 22,
-            }}
-          >
-            ▦ VPB
-          </Text>
-        </View>
-      </View>
+      {header}
       <ScrollView
         key={screen}
         keyboardShouldPersistTaps="handled"
@@ -151,6 +224,8 @@ function Prototype() {
         {screen === "Agenda" ? (
           <Calendar
             {...{ month, day, select, events, open }}
+            birthdays={state.birthdays}
+            looks={state.looks}
             create={() => edit()}
             signal={() => {
               locate("");
@@ -299,6 +374,7 @@ function Prototype() {
                 <Text>{posts} de 3 postagens para os itens</Text>
               </View>
             </View>
+            {birthField}
             {options("CABELO", "hair", ["Curto", "Espetado", "Franja"])}
             {options("ÓCULOS", "glasses", ["Sem óculos", "Armação", "Escuros"])}
             {options("PELE", "skin", ["Mel", "Castanha", "Escura", "Clara"])}
@@ -349,6 +425,7 @@ function Prototype() {
                 key={name}
                 active={name === user}
                 onPress={() => {
+                  setBirth(null);
                   group.switchUser(name);
                   navigate("Perfil");
                 }}

@@ -85,6 +85,7 @@ export function Field({
   onChangeText,
   placeholder,
   maxLength = 160,
+  keyboardType,
 }) {
   return (
     <View style={{ gap: 5 }}>
@@ -97,6 +98,7 @@ export function Field({
         placeholder={placeholder}
         placeholderTextColor={muted}
         maxLength={maxLength}
+        keyboardType={keyboardType}
       />
     </View>
   );

@@ -12,6 +12,11 @@ Cada pessoa recebe um convite individual vinculado ao próprio perfil. Pode come
 ## Calendário
 A tela inicial abre no mês atual e permite navegar entre meses. Cada célula mostra o horário e o nome curto do primeiro evento em ordem cronológica. Um indicador como **+2** revela quantos outros existem. Tocar na data abre a lista completa com os status.
 
+## Aniversários e feriados
+No primeiro acesso, antes de abrir a agenda, cada membro informa o dia e o mês do aniversário (DD/MM; o ano é opcional e não é guardado). A data entra automaticamente na agenda da turma e se repete todos os anos, com um 🎂 na célula e o avatar do aniversariante na lista do dia. Quem nasceu em 29/02 aparece em 28/02 nos anos não bissextos. O próprio membro pode corrigir a data no **Perfil**.
+
+A agenda mostra os feriados nacionais brasileiros com fundo próprio: Confraternização Universal, Sexta-feira Santa, Tiradentes, Dia do Trabalho, Independência do Brasil, Nossa Senhora Aparecida, Finados, Proclamação da República, Consciência Negra (a partir de 2024) e Natal. Carnaval (segunda e terça) e Corpus Christi aparecem identificados como **Ponto facultativo**. As datas móveis são calculadas a partir da Páscoa de cada ano. Aniversários e feriados não geram avisos nem contam como postagens.
+
 ## Publicações
 Qualquer membro pode publicar uma **Sugestão** ou um **Evento confirmado**. Nome do rolé, dia e horário são obrigatórios. Local e descrição são opcionais. A publicação aparece imediatamente na agenda.
 

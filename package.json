@@ -8,7 +8,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "test": "node --test domain.test.mjs features.test.mjs impostor.test.mjs",
+    "test": "node --test domain.test.mjs features.test.mjs impostor.test.mjs agenda.test.mjs",
     "build:ios": "npx --yes eas-cli@26.0.0 build -p ios --profile production --auto-submit",
     "group": "node server.mjs",
     "invite": "node server.mjs invite"

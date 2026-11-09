@@ -69,6 +69,7 @@ function snapshot(sock) {
     state: {
       ...state,
       user: u,
+      birthdays: state.birthdays ?? {},
       prefs: { [u]: state.prefs[u] ?? {} },
       inbox: { [u]: state.inbox[u] ?? [] },
       rooms: state.rooms.map((r) => roomView(r, u)),

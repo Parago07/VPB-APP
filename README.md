@@ -17,11 +17,12 @@ Conecte o celular à mesma rede Wi-Fi e abra o QR code exibido no terminal pelo 
 
 ## Experimentar o fluxo
 
-1. Selecione um dia, toque em **Publicar rolé** e crie uma sugestão com dia e horário.
-2. Em **Perfil → Trocar perfil de teste**, escolha Zé e reaja à sugestão. Volte ao autor, confirme o evento e depois altere a hora para conferir a diferença nas reações.
-3. Dispare um **batsinal** com um local. Troque para outro perfil e abra **Avisos** para ver a simulação da entrega. Desative Batsinal nesse perfil e repita o teste.
-4. Publique três rolés com o mesmo perfil. Em **Perfil**, equipe um chapéu e a Balthinha.
-5. Como autor ou administrador, abra um evento e escolha **Cancelado pela patroa**. Verifique o rótulo na agenda e nos avisos dos outros perfis.
+1. No primeiro acesso, informe o aniversário (DD/MM). Navegue até o mês para ver o 🎂 na agenda e os feriados nacionais destacados. Ao trocar de perfil de teste, cada perfil novo também informa a data.
+2. Selecione um dia, toque em **Publicar rolé** e crie uma sugestão com dia e horário.
+3. Em **Perfil → Trocar perfil de teste**, escolha Zé e reaja à sugestão. Volte ao autor, confirme o evento e depois altere a hora para conferir a diferença nas reações.
+4. Dispare um **batsinal** com um local. Troque para outro perfil e abra **Avisos** para ver a simulação da entrega. Desative Batsinal nesse perfil e repita o teste.
+5. Publique três rolés com o mesmo perfil. Em **Perfil**, equipe um chapéu e a Balthinha.
+6. Como autor ou administrador, abra um evento e escolha **Cancelado pela patroa**. Verifique o rótulo na agenda e nos avisos dos outros perfis.
 
 ## Entrar na agenda compartilhada
 
@@ -43,7 +44,7 @@ Com Node 24, execute `npx expo export --platform web` e `npm run group` no compu
 
 ### Administração Supabase
 
-O banco privado é criado em `supabase/migrations`. A Edge Function `vpb-group` autentica o convite e executa as regras compartilhadas com o servidor LAN. Apenas o backend chama as funções SQL de leitura e gravação. O cliente usa a chave publicável. Guarde os códigos individuais fora do repositório; o banco guarda somente seus hashes SHA-256. Para substituir um convite, gere 32 bytes aleatórios, entregue sua representação hexadecimal ao membro e atualize o hash do código na tabela privada.
+O banco privado é criado em `supabase/migrations`. A Edge Function `vpb-group` autentica o convite e executa as regras compartilhadas com o servidor LAN. Apenas o backend chama as funções SQL de leitura e gravação. Após alterar `supabase/functions`, publique a função com `supabase functions deploy vpb-group`; o pedido de aniversário só aparece para quem está conectado depois que a função publicada passa a enviar o campo `birthdays`. O cliente usa a chave publicável. Guarde os códigos individuais fora do repositório; o banco guarda somente seus hashes SHA-256. Para substituir um convite, gere 32 bytes aleatórios, entregue sua representação hexadecimal ao membro e atualize o hash do código na tabela privada.
 
 ### Build para TestFlight
 

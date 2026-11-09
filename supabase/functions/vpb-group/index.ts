@@ -28,6 +28,7 @@ function visible(s: any, u: string) {
   return {
     ...s,
     user: u,
+    birthdays: s.birthdays ?? {},
     prefs: { [u]: s.prefs[u] ?? {} },
     inbox: { [u]: s.inbox[u] ?? [] },
     rooms: s.rooms.map((r: any) => roomView(r, u)),
