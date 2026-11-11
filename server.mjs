@@ -7,7 +7,7 @@ import { randomBytes, createHash } from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
 import { WebSocketServer, WebSocket } from "ws";
 import { members, seed } from "./supabase/functions/_shared/domain.mjs";
-import { applyAction } from "./supabase/functions/_shared/features.mjs";
+import { applyAction, visiblePixKeys } from "./supabase/functions/_shared/features.mjs";
 const db = new DatabaseSync(process.env.VPB_DB ?? "vpb.sqlite");
 db.exec(
   "PRAGMA journal_mode=WAL; CREATE TABLE IF NOT EXISTS group_state(id INTEGER PRIMARY KEY, data TEXT NOT NULL); CREATE TABLE IF NOT EXISTS invites(digest TEXT PRIMARY KEY,member TEXT UNIQUE); CREATE TABLE IF NOT EXISTS applied(member TEXT,key TEXT,PRIMARY KEY(member,key))",
@@ -68,6 +68,7 @@ function snapshot(sock) {
   send(sock, {
     state: {
       ...state,
+      pixKeys: visiblePixKeys(state, u),
       user: u,
       prefs: { [u]: state.prefs[u] ?? {} },
       inbox: { [u]: state.inbox[u] ?? [] },

@@ -20,6 +20,20 @@ import {
 
 const reactions = ["Aprovo", "Neutro", "Reprovo"];
 const today = dateKey(new Date());
+function PixProfile({ saved, run, onboarding = false }) {
+  const [value, setValue] = useState(saved ?? "");
+  return (
+    <View style={s.box}>
+      <Field name="Chave Pix preferida" value={value} onChangeText={setValue}
+        maxLength={77} placeholder="CPF, CNPJ, telefone, e-mail ou chave aleatória" />
+      <Text>Quem tiver um saldo a pagar a você poderá ver esta chave.</Text>
+      <Button active onPress={() => run({ op: "pix", value: value.trim() })}>Salvar chave Pix</Button>
+      {(onboarding || saved) && <Button onPress={() => run({ op: "pix", value: null })}>
+        {onboarding ? "Cadastrar depois" : "Remover chave"}
+      </Button>}
+    </View>
+  );
+}
 function Prototype() {
   const [error, err] = useState(""),
     [screen, go] = useState("Agenda");
@@ -144,6 +158,9 @@ function Prototype() {
       >
         {group.invite && !group.connected && (
           <Text>Reconectando ao grupo…</Text>
+        )}
+        {group.invite && screen === "Agenda" && !Object.hasOwn(state.pixKeys ?? {}, user) && (
+          <PixProfile key={user} run={run} onboarding />
         )}
         {screen === "Jogos" && (
           <Games state={state} run={run} group={!!group.invite} />
@@ -299,6 +316,7 @@ function Prototype() {
                 <Text>{posts} de 3 postagens para os itens</Text>
               </View>
             </View>
+            <PixProfile key={user + (state.pixKeys?.[user] ?? "")} saved={state.pixKeys?.[user]} run={run} />
             {options("CABELO", "hair", ["Curto", "Espetado", "Franja"])}
             {options("ÓCULOS", "glasses", ["Sem óculos", "Armação", "Escuros"])}
             {options("PELE", "skin", ["Mel", "Castanha", "Escura", "Clara"])}

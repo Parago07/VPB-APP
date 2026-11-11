@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Storage from "@react-native-async-storage/async-storage";
 import { cloudConnection, projectURL } from "./cloud";
 import { migrate, seed } from "./supabase/functions/_shared/domain.mjs";
-import { applyAction } from "./supabase/functions/_shared/features.mjs";
+import { applyAction, visiblePixKeys } from "./supabase/functions/_shared/features.mjs";
 const localKey = "vpb:prototype:v1",
   inviteKey = "vpb:connection:v1";
 export function useGroup(err) {
@@ -162,6 +162,7 @@ export function useGroup(err) {
       ? remote
       : local && {
           ...local,
+          pixKeys: visiblePixKeys(local, local.user),
           rooms: local.rooms.map((r) => roomView(r, local.user)),
         },
     invite,
