@@ -5002,7 +5002,7 @@
     "category": "Conhecimento Geral",
     "subcategory": "Geography",
     "difficulty": "medium",
-    "question": "The land mass of modern day Turkey is called what?",
+    "question": "Como se chama a massa continental onde fica a atual Turquia?",
     "correct_answer": "Anatolia",
     "incorrect_answers": [
       "Ismuth of Ottoma",
@@ -6080,7 +6080,7 @@
     "category": "Conhecimento Geral",
     "subcategory": "Geography",
     "difficulty": "medium",
-    "question": "What is the name of the capital of Turkey?",
+    "question": "Qual é a capital da Turquia?",
     "correct_answer": "Ankara",
     "incorrect_answers": [
       "Istanbul",
@@ -6127,7 +6127,7 @@
     "incorrect_answers": [
       "Bulgária",
       "Eslovênia",
-      "Turkey"
+      "Turquia"
     ],
     "source": "opentdb"
   },
@@ -8982,7 +8982,7 @@
     "correct_answer": "Itália",
     "incorrect_answers": [
       "Polônia",
-      "Turkey",
+      "Turquia",
       "Trinidad e Tobago"
     ],
     "source": "openfootball"
@@ -9860,7 +9860,7 @@
     "category": "Futebol",
     "subcategory": "Copa do Mundo 2002",
     "difficulty": "hard",
-    "question": "Qual foi o placar no tempo regulamentar do confronto entre Senegal e Turkey (Quarter-finals, 2002-06-22) na Copa do Mundo de 2002?",
+    "question": "Qual foi o placar no tempo regulamentar do confronto entre Senegal e Turquia (Quarter-finals, 2002-06-22) na Copa do Mundo de 2002?",
     "correct_answer": "0 x 0",
     "incorrect_answers": [
       "1 x 0",
@@ -10019,7 +10019,7 @@
     "incorrect_answers": [
       "Áustria",
       "Nigéria",
-      "Turkey"
+      "Turquia"
     ],
     "source": "openfootball"
   },
@@ -10593,7 +10593,7 @@
     "incorrect_answers": [
       "Islândia",
       "Equador",
-      "Turkey"
+      "Turquia"
     ],
     "source": "openfootball"
   },
@@ -11165,7 +11165,7 @@
     "question": "Qual seleção venceu a partida contra Espanha por 3 a 1 (Round of 16, 2006-06-27) na Copa do Mundo de 2006?",
     "correct_answer": "França",
     "incorrect_answers": [
-      "Turkey",
+      "Turquia",
       "Emirados Árabes Unidos",
       "Zaire"
     ],
@@ -13043,7 +13043,7 @@
     "incorrect_answers": [
       "Haiti",
       "Jamaica",
-      "Turkey"
+      "Turquia"
     ],
     "source": "openfootball"
   },
@@ -14694,7 +14694,7 @@
     "correct_answer": "Países Baixos",
     "incorrect_answers": [
       "Estados Unidos",
-      "Turkey",
+      "Turquia",
       "Sérvia e Montenegro"
     ],
     "source": "openfootball"
@@ -15295,7 +15295,7 @@
     "question": "Qual seleção venceu a partida contra Austrália por 4 a 1 (Matchday 3, 2022-11-22) na Copa do Mundo de 2022?",
     "correct_answer": "França",
     "incorrect_answers": [
-      "Turkey",
+      "Turquia",
       "Tchecoslováquia",
       "Grécia"
     ],
@@ -15870,7 +15870,7 @@
     "correct_answer": "Marrocos",
     "incorrect_answers": [
       "Hungria",
-      "Turkey",
+      "Turquia",
       "Irlanda do Norte"
     ],
     "source": "openfootball"
@@ -17648,7 +17648,7 @@
     "correct_answer": "dólar dos Estados Unidos",
     "incorrect_answers": [
       "dólar de Kiribati",
-      "Cape Verdean escudo",
+      "escudo cabo-verdiano",
       "Norwegian krone"
     ],
     "source": "restcountries"
@@ -17775,7 +17775,7 @@
     "incorrect_answers": [
       "pula de Botsuana",
       "Swazi lilangeni",
-      "Cape Verdean escudo"
+      "escudo cabo-verdiano"
     ],
     "source": "restcountries"
   },
@@ -20431,7 +20431,7 @@
     "subcategory": "Moedas",
     "difficulty": "hard",
     "question": "Qual é a moeda oficial utilizada em Cabo Verde (capital: Praia)?",
-    "correct_answer": "Cape Verdean escudo",
+    "correct_answer": "escudo cabo-verdiano",
     "incorrect_answers": [
       "Sri Lankan rupee",
       "krone",
@@ -29799,7 +29799,7 @@
     "question": "Qual é a moeda oficial utilizada em Catar (capital: Doha)?",
     "correct_answer": "Qatari riyal",
     "incorrect_answers": [
-      "Cape Verdean escudo",
+      "escudo cabo-verdiano",
       "Lebanese pound",
       "Nigerian naira"
     ],
@@ -31844,7 +31844,7 @@
     "correct_answer": "West African CFA franc",
     "incorrect_answers": [
       "Barbadian dollar",
-      "Cape Verdean escudo",
+      "escudo cabo-verdiano",
       "Panamanian balboa"
     ],
     "source": "restcountries"
@@ -31984,7 +31984,7 @@
     "correct_answer": "Tajikistani somoni",
     "incorrect_answers": [
       "Kazakhstani tenge",
-      "Cape Verdean escudo",
+      "escudo cabo-verdiano",
       "Cambodian riel"
     ],
     "source": "restcountries"
@@ -32825,7 +32825,7 @@
     "incorrect_answers": [
       "Moroccan dirham",
       "Russian ruble",
-      "Cape Verdean escudo"
+      "escudo cabo-verdiano"
     ],
     "source": "restcountries"
   },
