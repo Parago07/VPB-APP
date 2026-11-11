@@ -3,10 +3,30 @@ import { View, Text, Linking } from "react-native";
 import { s, Avatar, Button, Field } from "./ui";
 import { defaultLook } from "./supabase/functions/_shared/domain.mjs";
 import {
+  amount as parseAmount,
   calendarUrl,
   brl,
   transfers,
 } from "./supabase/functions/_shared/features.mjs";
+function Settlement({ to, balance, pix, act, err }) {
+  const [value, setValue] = useState((balance / 100).toFixed(2).replace(".", ","));
+  async function record() {
+    try {
+      const cents = parseAmount(value);
+      await act("settle", { to, cents, expectedCents: balance });
+    } catch (error) {
+      err(error.message);
+    }
+  }
+  return (
+    <View style={s.box}>
+      <Text selectable>{pix ? "Chave Pix de " + to + ": " + pix : to + " ainda não cadastrou uma chave Pix."}</Text>
+      <Field name="Quanto você pagou?" value={value} onChangeText={setValue} />
+      <Button onPress={record}>Registrar pagamento</Button>
+    </View>
+  );
+}
+
 export default function EventExtras({ event: e, state, run, err }) {
   const [section, show] = useState("Lista"),
     [name, setName] = useState(""),
@@ -178,9 +198,7 @@ export default function EventExtras({ event: e, state, run, err }) {
                   {from} deve {brl(c)} a {to}
                 </Text>
                 {from === u && (
-                  <Button onPress={() => act("settle", { to, cents: c })}>
-                    Registrar pagamento de {brl(c)}
-                  </Button>
+                  <Settlement key={u + ":" + c} to={to} balance={c} pix={state.pixKeys?.[to]} act={act} err={err} />
                 )}
               </View>
             ))

@@ -4,6 +4,7 @@ import {
   applyAction,
   amount,
   transfers,
+  visiblePixKeys,
   calendarUrl,
 } from "./supabase/functions/_shared/features.mjs";
 import { seed, migrate } from "./supabase/functions/_shared/domain.mjs";
@@ -91,4 +92,27 @@ test("Salas isoladas, jogadores, vez no xadrez, pontuação e casas fixas", () =
       assert.equal(r.round, 1);
     }
   }
+});
+
+test("Acerto parcial preserva centavos e limita quem vê a chave Pix", () => {
+  let state = seed();
+  const act = (user, op, args) => {
+    state = applyAction(state, user, { op, id: "role", ...args });
+  };
+  act("Zé", "pix", { value: "ze@example.com" });
+  act("Zé", "save", { id: null, key: "role", draft: date });
+  for (const user of ["Zé", "Neto"]) act(user, "attend", { value: true });
+  act("Zé", "expense", { key: "pizza", title: "Pizza", amount: "60,01", people: ["Neto"] });
+  assert.equal(visiblePixKeys(state, "Neto").Zé, "ze@example.com");
+  assert.deepEqual(visiblePixKeys(state, "Fred"), {});
+  const pay = (cents, expectedCents) => act("Neto", "settle", { to: "Zé", cents, expectedCents });
+  for (const invalid of [0, -1, 6002, 0.5]) assert.throws(() => pay(invalid, 6001));
+  pay(2000, 6001);
+  assert.throws(() => pay(2000, 6001));
+  assert.deepEqual(transfers(state.events[0].expenses, state.events[0].payments), [["Neto", "Zé", 4001]]);
+  pay(4001, 4001);
+  assert.deepEqual(visiblePixKeys(state, "Neto"), {});
+  assert.throws(() => act("Zé", "pix", { value: "inválida" }));
+  act("Zé", "pix", { value: null });
+  assert.deepEqual(visiblePixKeys(state, "Zé"), { Zé: null });
 });

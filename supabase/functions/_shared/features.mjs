@@ -64,6 +64,18 @@ export function transfers(expenses, payments = []) {
   }
   return out;
 }
+export function visiblePixKeys(state, user) {
+  const keys = state.pixKeys ?? {};
+  const visible = {};
+  if (Object.hasOwn(keys, user)) visible[user] = keys[user];
+  for (const event of state.events) {
+    for (const [from, to] of transfers(event.expenses ?? [], event.payments)) {
+      if (from === user && keys[to]) visible[to] = keys[to];
+    }
+  }
+  return visible;
+}
+
 export function calendarUrl(e) {
   const start = new Date(e.date + "T" + e.time + ":00-03:00");
   const fmt = (d) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
@@ -107,6 +119,12 @@ export function applyAction(state, user, a) {
       ...state,
       rooms: state.rooms.map((r) => (r.id === id ? play(r, user, a.play) : r)),
     };
+  }
+  if (op === "pix") {
+    const value = a.value === null ? null : clean(a.value, 77);
+    if (value && !/^(?:[^\s@]+@[^\s@]+\.[^\s@]+|\+\d{8,15}|\d{10,14}|\d{3}\.\d{3}\.\d{3}-\d{2}|\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}|[a-f\d]{8}(?:-[a-f\d]{4}){3}-[a-f\d]{12}|\(\d{2}\)\s?\d{4,5}-\d{4})$/i.test(value))
+      fail("Informe um CPF, CNPJ, e-mail, telefone ou chave aleatória.");
+    return { ...state, pixKeys: { ...state.pixKeys, [user]: value } };
   }
   if (op === "look") {
     const options = {
@@ -250,8 +268,10 @@ export function applyAction(state, user, a) {
   }
   if (op === "settle") {
     const transfer = transfers(expenses, e.payments).find(
-      ([from, to, c]) => from === user && to === a.to && c === a.cents,
+      ([from, to, c]) => from === user && to === a.to && c === (a.expectedCents ?? a.cents),
     );
+    if (!Number.isSafeInteger(a.cents) || a.cents <= 0 || (transfer && a.cents > transfer[2]))
+      fail("Informe um valor positivo até o saldo em aberto.");
     if (!transfer) fail("O saldo mudou. Confira o valor atualizado.");
     return replace({
       ...e,

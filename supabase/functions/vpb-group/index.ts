@@ -1,5 +1,5 @@
 import { roomView } from "../_shared/impostor.mjs";
-import { applyAction } from "../_shared/features.mjs";
+import { applyAction, visiblePixKeys } from "../_shared/features.mjs";
 const url = Deno.env.get("SUPABASE_URL")!;
 const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const headers = {
@@ -27,6 +27,7 @@ async function rpc(name: string, args: object) {
 function visible(s: any, u: string) {
   return {
     ...s,
+    pixKeys: visiblePixKeys(s, u),
     user: u,
     prefs: { [u]: s.prefs[u] ?? {} },
     inbox: { [u]: s.inbox[u] ?? [] },
